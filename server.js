@@ -8,8 +8,6 @@ dotenv.config();
 
 const app = express();
 
-/// Connect MongoDB
-connectDB();
 /// Middleware
 const allowedOrigins = [
   "http://localhost:5173",
@@ -36,6 +34,16 @@ app.get("/", (req, res) => {
 });
 
 /// Start server
-app.listen(process.env.PORT || 5000, () => {
-  console.log("Server running");
-});
+const startServer = async () => {
+  try {
+    await connectDB();
+    app.listen(process.env.PORT || 5000, () => {
+      console.log("Server running");
+    });
+  } catch (error) {
+    console.error("Server startup failed:", error.message);
+    process.exit(1);
+  }
+};
+
+startServer();
